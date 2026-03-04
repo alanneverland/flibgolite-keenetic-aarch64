@@ -15,9 +15,9 @@ $flags = "-s -w"
 
 Write-Host "`n--- Building for Keenetic ---" -ForegroundColor Cyan
 
-Write-Host "Hero (arm64)..."
+Write-Host "KN1012 (arm64)..."
 $env:GOOS="linux"; $env:GOARCH="arm64"; $env:GOMIPS=""
-go build -ldflags="-s -w" -o ./dist/flibgolite-hero $source
+go build -ldflags="-s -w" -o ./dist/flibgolite-KN1012 $source
 
 Write-Host "`n--- Building for Windows ---" -ForegroundColor Cyan
 
