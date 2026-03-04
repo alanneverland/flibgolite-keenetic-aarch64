@@ -1,4 +1,4 @@
-# FLibGoLite — OPDS for Keenetic Routers (aarch64/mips)
+# FLibGoLite — OPDS for Keenetic Routers (aarch64)
 ===
 
 **FLibGoLite** is an optimized fork of the original project, specifically adapted for stable performance on Keenetic routers and other resource-constrained embedded systems.
