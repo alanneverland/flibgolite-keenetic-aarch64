@@ -1363,6 +1363,8 @@ func (h *Handler) getCoverImage(bookId int64) (img image.Image) {
 			return nil
 		}
 		return img
+	case "pdf":
+		return nil
 	}
 	return nil
 }

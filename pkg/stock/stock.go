@@ -22,6 +22,7 @@ import (
 	"github.com/vinser/flibgolite/pkg/model"
 	"github.com/vinser/flibgolite/pkg/parser"
 	"github.com/vinser/flibgolite/pkg/rlog"
+	"github.com/vinser/flibgolite/pkg/pdf"
 )
 
 type Handler struct {
@@ -103,6 +104,17 @@ func (h *Handler) isFileReady(dir string, ent fs.DirEntry) (path string, ext str
 							return "", "", fmt.Errorf("file %s is busy and postponed until the next scan", path)
 						}
 					}
+				case ".pdf": // Добавьте отдельную простую проверку для PDF
+					for i := 0; i < 5; i++ {
+						f, err := os.Open(path)
+						if err == nil {
+							f.Close()
+							return path, ext, nil
+						}
+						time.Sleep(poll)
+						poll *= 2
+					}
+					return "", "", fmt.Errorf("pdf file %s is busy", path)	
 				default:
 					time.Sleep(poll)
 					return path, ext, nil
@@ -148,6 +160,15 @@ func (h *Handler) ScanDir(dir string) error {
 			//go func() {
 				h.LOG.I.Println("file: ", entry.Name())
 				err = h.indexEPUBFile(path)
+				h.moveFile(path, err)
+				if err != nil {
+					h.LOG.W.Println(err)
+				}
+			//}()
+		case ext == ".pdf":
+			//go func() {
+				h.LOG.I.Println("file: ", entry.Name())
+				err = h.indexPDFFile(path)
 				h.moveFile(path, err)
 				if err != nil {
 					h.LOG.W.Println(err)
@@ -292,6 +313,69 @@ func (h *Handler) indexEPUBFile(EPUBPath string) error {
 	h.BookQueue <- *book
 	return nil
 }
+
+// Process single PDF file and add it to book stock index
+func (h *Handler) indexPDFFile(PDFPath string) error {
+	fInfo, _ := os.Stat(PDFPath)
+	file := fInfo.Name()
+	if h.Hashes.FileExists(file, "") {
+		h.LOG.D.Printf("file %s is in stock already and has been skipped", file)
+		return nil
+	}
+	p, err := pdf.NewPDF(PDFPath)
+	h.LOG.D.Printf("file %s parsing finished", file)
+	if err != nil {
+		// Если парсер упал или выдал ошибку, отправляем статус в очередь
+		// Используем select, чтобы не зависнуть, если очередь БД переполнена
+		select {
+		case h.BookQueue <- model.Book{File: file, Updated: int64(hash.FileHasErrors)}:
+		default:
+			h.LOG.E.Printf("DB Queue is full, couldn't report error for %s", file)
+		}
+		return fmt.Errorf("file %s has errors: %v", file, err)
+	}
+	
+	language := p.GetLanguage()
+	if !h.acceptLanguage(language.Code) {
+		select {
+		case h.BookQueue <- model.Book{File: file, Updated: int64(hash.LanguageNotAccepted)}:
+		default:
+		}
+		return fmt.Errorf("language %s not accepted for %s", language.Code, file)
+	}
+	
+	book := &model.Book{
+		File:     file,
+		CRC32:    fileCRC32(PDFPath), // Считаем CRC32 для контроля дубликатов
+		Archive:  "",
+		Size:     fInfo.Size(),
+		Format:   p.GetFormat(),
+		Title:    p.GetTitle(),
+		Sort:     p.GetSort(),
+		Year:     p.GetYear(),
+		Plot:     p.GetPlot(),
+		Cover:    "", // Обложки для PDF пока нет
+		Language: language,
+		Authors:  p.GetAuthors(),
+		Genres:   p.GetGenres(),
+		Keywords: p.GetKeywords(),
+		Serie:    p.GetSerie(),
+		SerieNum: p.GetSerieNumber(),
+		Updated:  time.Now().UnixNano(),
+	}
+	
+    h.GT.Refine(book)    // Привязываем жанры из дерева
+	// 4. НЕБЛОКИРУЮЩАЯ ОТПРАВКА В ОЧЕРЕДЬ
+	// Если за 15 секунд БД не приняла книгу — пишем ошибку и идем дальше
+	select {
+	case h.BookQueue <- *book:
+		// Успешно отправлено
+	case <-time.After(time.Second * 15):
+		return fmt.Errorf("database timeout while indexing %s (DB thread might be stuck)", file)
+	}
+	return nil
+}
+
 
 // Process zip archive with FB2 files and add them to book stock index
 func (h *Handler) indexFB2Zip(zipPath string) error {

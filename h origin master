@@ -1,0 +1,267 @@
+[33m232536f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/feature/opt-for-keenetic[m[33m, [m[1;32mfeature/opt-for-keenetic[m[33m)[m Performance: Semaphore for covers and nil-pointer protection in unloadBook
+[33me1e37a0[m Оптимизация сканера архивов и защита от падения при отсутствии файлов
+[33me02aa6c[m Fix: исправлена логика подписей и подсчета при точном совпадении авторов и серий
+[33m4a823fc[m Отвязка результатов выдачи каталога OPDS от языка интерфейса и оптимизация под keenetic
+[33mcad992e[m[33m ([m[1;31morigin/base-opt[m[33m, [m[1;32mfeature/opds-lang-fix[m[33m, [m[1;32mbase-opt[m[33m)[m Optimizing database queries and adding language and publication year tags to the feed/
+[33m392e30c[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m Update release version
+[33m6ec9ba4[m Refresh
+[33m1b93e6f[m Deep refactoring
+[33md041cef[m Improve the accuracy of index record update time
+[33m3fc9a3c[m Improve service and fix for freebsd
+[33mbba4dc9[m Merge pull request #78 from vinser/77-books-sort-order-with-no-specs
+[33m3fcd772[m Book sort without specs
+[33m5602199[m Merge pull request #76 from vinser/69-add-all-series-book-link-to-book-entry
+[33m05961c9[m Add all serie books to book entry
+[33mc79913f[m Merge pull request #75 from vinser/71-full-text-search-by-keywords
+[33m074b46e[m Add FTS5 by keywords
+[33m057748d[m Reverting changes to author and series search for single language mode
+[33m5b1644e[m Merge pull request #74 from vinser/73-language-menu-does-not-switch-language
+[33mb7c4de1[m Issue #73 bugfix
+[33ma60700f[m keywarrd fts draft
+[33m3cafe46[m Add linux and freebsd 386 prebuilds
+[33mc62668e[m Upgrade dependencies
+[33m534b2a1[m Fix .PHONY
+[33m3ba3f6f[m Updated Readme current release simver
+[33m87cbded[m Add windows 386 prebuild binary
+[33m772b3ac[m Merge pull request #68 from vinser/61-add-basic-authentication-to-the-service
+[33m35cf4dd[m Add http BasicAuth with plain text credentials
+[33m075aedd[m Change all to any linguage option
+[33mc47e647[m Merge pull request #67 from vinser/60-speed-up-the-opds-server-startup
+[33md6ba7f3[m Start OPDS before cache heating
+[33ma8a7913[m Merge pull request #66 from vinser/58-add-language-info-in-book-details-view
+[33m948d38c[m Add lang  to details
+[33m20b85d8[m Merge pull request #65 from vinser/57-dont-discard-books-by-language
+[33m25ed8b0[m Add option "all" for ACCEPTED
+[33mb2979da[m Merge pull request #63 from vinser/56-dont-show-language-selection-menu-when-only-one-localization-file
+[33m4a896c5[m Authors and series feeds optimization
+[33m6796ee2[m Trim spaces in serie name
+[33m8e8510b[m Fix some minor errors
+[33m5d3bcac[m Merge pull request #62 from vinser/55-opds-panics-due-to-missing-default-language-localization-file
+[33m4625b1a[m Refactor to enshure default locale file
+[33m165f56a[m Fixed Latest entry ID of the root feed
+[33m9f7f443[m Merge pull request #59 from sattellite/patch-1
+[33m03ff081[m Update epubxml.go
+[33me6f9007[m fixed reading .epub that are not compliant with standard
+[33m27c052a[m Dockerfile for self build
+[33m2fcf730[m Make docker hub multi-arch image
+[33m8f90686[m Updtate README for  v2.2.2
+[33maa44ac0[m Fix unloaded file naming
+[33mc09be1f[m Add File and Archive details to book description
+[33m1775b7e[m Add favicon
+[33ma202a38[m Fix document details line breaks
+[33maf3cbb0[m Update readme
+[33m2e3e01f[m Merge pull request #53 from vinser/51-download-file-name
+[33mf96fb3a[m Make downloas file name human readable
+[33m420766b[m Update README
+[33mc2c5a59[m Fix  linux build list
+[33mfea9c0e[m Merge pull request #50 from vinser/48-endless-processing-of-a-book-placed-in-a-zip
+[33m0189488[m Add records of invalid files and duplicates based on hash search
+[33mb446f16[m Refactor config defaults
+[33m450ea1a[m Add hash
+[33m365fe47[m Speed up stock processing queries
+[33m663a391[m Add ARMv7 build
+[33m2571ed4[m Add config defaults if omitted in config.yml
+[33m3b7d9d6[m Fix format
+[33mab63f41[m Merge pull request #47 from vinser/33-too-many-series-may-be-in-one-feed
+[33m68d45cb[m Fix bug in series choosing
+[33m736bf7b[m Merge pull request #46 from vinser/36-turn-off-duplicated-setting
+[33mf233b87[m Add check for duplicates levels
+[33mf7bf6f0[m Remove excess drop
+[33m9aa2322[m Merge pull request #45 from vinser/40-add-new-acqusitions-section
+[33mb0fd32b[m Add a new acquisitions section
+[33mf4acee8[m Merge pull request #44 from vinser/43-book-authors-selection
+[33md40dac4[m Adjust book author selection
+[33m978d144[m Ignore link file to books dir
+[33m3d91ca5[m Merge pull request #42 from vinser/35-add-book-file-size-sequence-name-and-number-in-a-sequence
+[33mf5c6fdf[m Add book details to feed and simlify DB
+[33m91e34ee[m Merge pull request #41 from vinser/sqlite-wal
+[33mc49bc19[m Add direct opensearch link and fix illegal format symbol
+[33m7143bf9[m Simplify TX end
+[33mc757c1d[m Adjust default db config queues settings
+[33m9298640[m Change sqlite journal type delete to wal
+[33mdbe7419[m Update README.md
+[33m1bd0dfb[m Merge pull request #30 from vinser/Fix-issue29
+[33mec46da7[m Fix issue #29 - Minor FB2 to EPUB conversion errors
+[33m188625c[m Update README.md
+[33mc8c8515[m Merge pull request #28 from vinser/bug-27
+[33m94fc7c6[m Fix bug issue#27
+[33mf9aac15[m Update README.md
+[33md8f7fca[m Merge pull request #26 from vinser/fb2-epub2
+[33m9bf5a5d[m Restore code
+[33mf2c5d78[m Fix indirect
+[33mee8c62d[m Remove test data
+[33m1a11359[m .
+[33m6af111d[m Add convert fb2 to epub acquisition link
+[33m363a71e[m Add convert fb2 to epub acquisition link
+[33mdc47a0a[m add darwin arm build
+[33m11d87cd[m Add first, last and previous links to search and genres feeds
+[33mb7f0a05[m Fix usage help
+[33m841fcae[m Update dependent package versions
+[33me9c5df5[m Add books totals to language choose page
+[33m1ba32f3[m Add file queue for parallel FB2 archives parsing
+[33m871a8b9[m Use go:embed instead of string literals
+[33m888e38b[m Add UTF-16 books indexing
+[33mc18526a[m Upgrade Go version
+[33m6efedff[m Merge pull request #25 from vinser/hugo_site
+[33m114fe3e[m Add docs site
+[33m7899b96[m Fix typo in comment
+[33m89b9d30[m Remove jakyll site
+[33mbd85ca8[m ...
+[33m8525b8b[m up
+[33mafce212[m up
+[33m9fea90b[m up
+[33m2eab864[m up
+[33m6117af6[m up
+[33mf64f579[m up
+[33mcd24861[m up
+[33m9d88224[m up
+[33m3b957d2[m up
+[33md2899fd[m up
+[33m273d1f3[m up
+[33mf7e8f29[m up
+[33mcc38ea7[m up
+[33ma0737e0[m up
+[33me8432a9[m Update lm-code-background-color
+[33mf95b759[m Update lm-code-background-color
+[33mf265da2[m Update lm-code-background-color
+[33mebb5d7d[m Update lm-code-background-color
+[33mfc7f0fe[m Update code background color
+[33m5c97292[m Update user guide
+[33m8ede5d0[m up
+[33m52f8d5a[m up
+[33mb4c5c76[m up
+[33ma045965[m up
+[33md9f7710[m up
+[33m6e04070[m up
+[33m24d748e[m up
+[33m51db657[m up
+[33mf28d91a[m Add site url
+[33ma60cedc[m up
+[33ma0ebbd3[m up
+[33ma55a564[m up
+[33m4916ed5[m up
+[33m9296b4a[m up
+[33m8dcaa62[m up
+[33m28b895a[m up
+[33m28af573[m up
+[33m3db9f02[m up
+[33m734bb25[m up
+[33m492fc81[m up
+[33m69c83d2[m up
+[33mca08ec7[m up
+[33m71462ba[m Update
+[33m0e2393c[m Site update
+[33m78c8736[m Update site
+[33m2830ecc[m Order pages
+[33m50493af[m Test home page
+[33med1bab1[m Make site pages
+[33mba41c1f[m Make home page
+[33mf86bab1[m Add home page
+[33m53d4f82[m Set jekylls title
+[33mbe52b18[m Add Jekyll config
+[33m101ca14[m Fix numeration
+[33m057a8fe[m Fic numlist on pages
+[33mc85a178[m Fix pages
+[33mc3dacac[m Test github pages
+[33m60a50fa[m Fix details
+[33m25086a0[m Fix details
+[33m161b332[m Fix details section
+[33m1826279[m Fix table
+[33m6d1443a[m Fix table
+[33m234782d[m Fix table
+[33m04fc943[m Merge pull request #23 from vinser/refator_stock
+[33m5a10a1c[m Add user guide translations
+[33m67a2e31[m Update for v2
+[33m4d033b3[m Update usage
+[33m23da35e[m C heck if service is in interactive mode
+[33m3138d4e[m Use github pages for v2.0.0
+[33mbca6809[m Refine opds search
+[33m277ad95[m Refine authors parsing
+[33m9de3fbe[m Change log verbosity for zip parsing
+[33m9950e3f[m Make verbosity level case insensitive
+[33m8c7e53d[m Add simple check for book duplicates
+[33m69e8df6[m Fix feed page size
+[33m96f572a[m Deduplucate book genres when parsing
+[33mbcd26c4[m Fix bug in GetCoverImage
+[33m5e41b62[m Fix empty plots by replacing buggy StripHTMLTags
+[33mc9801f0[m Tune logs verbisity
+[33m140f689[m Refactor scan to parallel queue processing
+[33m02338c2[m Remove Archive model
+[33m052b512[m Cloze zip.ReadCloser
+[33m64b2e2a[m Fix bug in authors sort name composing
+[33m4126fb6[m Change zip Store method for Deflate
+[33mf411869[m Remove redundant SYNC structure
+[33m42231eb[m Add archives table
+[33mc85dd25[m Close opened EPUB  file
+[33mded8e56[m Add archive table and precompile statments
+[33m23d2f5c[m Add command line data directory parameter
+[33m71a9bea[m Change xml decode for token stream parsing
+[33m2a264ef[m Use mime type "application/fb2+zip" in fb2 acquisition links
+[33me682634[m Clear feeds IDs
+[33m2d2b308[m Update
+[33m1ca7154[m Enhance OPDS response localization
+[33mb5e2576[m Fix typo
+[33m462610e[m Refine full text search query
+[33mdbba1b2[m Fix STOCK folder permissions #22
+[33m447384b[m Clear old commented retensions
+[33mff0cda1[m Update go version
+[33m24b633f[m Update README.md
+[33maa9d525[m Update README.md
+[33m0a51816[m Issue #21 - skip unsupported formats in archives
+[33m0302edc[m v1.1.0 README update
+[33m2e9bee4[m Single folder for book stock #20
+[33mdeb39e5[m Logs verbosity control by LEVEL in README
+[33mbc519f0[m Logs verbosity control by LEVEL
+[33m8ed90a1[m Fix parsing bugs
+[33m8544bff[m Update README.md
+[33m7818039[m Add OPDS-title custimization
+[33mcf37362[m Update configyml.go
+[33m2c5206f[m Merge pull request #18 from vinser/17-option-to-disable-log-rotation
+[33ma903287[m Issue #17 (redirect logs to stdout, write both logs in one file)
+[33m553d1df[m Update README.md
+[33me62e503[m Add mutex for NewBook
+[33m3049383[m Add Docker usage to README
+[33m36591b6[m Merge pull request #15 from freehck/docker
+[33m0c2fc90[m Update README.md
+[33mb14d5ec[m Fix file naming
+[33m479c197[m flibgolite docker container
+[33m07a6cb2[m Merge pull request #11 from vinser/Add-epub-indexing
+[33m431a30c[m Added EPUB
+[33m4982bfa[m Merge pull request #10 from vinser/GT-opt
+[33m19335a1[m Genre parsing optimization
+[33m1112531[m Rename parser Decoder
+[33m6bb8471[m Rename service logger
+[33m94deae5[m Some more utils for parcing
+[33m3c05960[m Separate common funcs for fb2 and epub
+[33m614194a[m Update README_RU.md
+[33m9049fd1[m Update README_UK.md
+[33mf3eee00[m Update README.md
+[33mc84cffa[m Update README_RU.md
+[33m97502b3[m Update README.md
+[33m8ca24f1[m Update README_UK.md
+[33mf6bc779[m Update README_RU.md
+[33mc5eeb3f[m Update README.md
+[33m8e810a7[m Update README.md
+[33m75aa81e[m README  has been significantly updated
+[33m786f542[m Setup FTS5 tokenizer
+[33m86b8168[m Merge pull request #7 from vinser/Multilanguage-OPDS
+[33me0a7886[m Wide localization and documenting
+[33mfd07d7e[m Adopted for Ukraine
+[33mf821d96[m Actuate readme
+[33m02f4040[m Fix config file name
+[33mfd8f803[m Many mickle makes a Makefile ;)
+[33m179dc8a[m Running the service as user who installed service
+[33m6bf1fe3[m Add FullText search FTS5
+[33mc997728[m File move before close failed on windows
+[33ma818855[m Windows service crosscompile
+[33m9b5ff9a[m OpenSearch issue closed
+[33m119c4c0[m typos
+[33m50263b4[m typo
+[33mc58fe36[m Service code refactoring
+[33mb63cf20[m status action added for service option
+[33mb1caed9[m Service control has been added
+[33me31ee27[m Some clearing
+[33md56ab4d[m some clearing
+[33m1b4f8b6[m clarification
+[33m20a30b0[m vergüenza ajena
+[33m91a620f[m first commit
