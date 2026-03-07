@@ -7,9 +7,7 @@ import (
 	"fmt"
 	"image"
 	"io"
-	"log"
 	"path"
-	"strings"
 
 	_ "image/gif"
 	_ "image/jpeg"
@@ -49,6 +47,8 @@ func GetOPFPath(zr *zip.ReadCloser) (string, error) {
 
 // EPUB Packages 3.2
 type OPF struct {
+	opfPath string
+
 	// The root element of the Package Document and defines various aspects of the EPUB Package
 	Package xml.Name `xml:"package"`
 	// Specifies the language used in the contents and attribute values of the carrying element and its descendants
@@ -114,6 +114,12 @@ type OPF struct {
 			Properties string `xml:"properties,attr,omitempty"`
 		} `xml:"item"`
 	} `xml:"manifest"`
+	Guide struct {
+		Reference []struct {
+			Type string `xml:"type,attr"`
+			Href string `xml:"href,attr"`
+		} `xml:"reference"`
+	} `xml:"guide"`
 }
 
 func (opf *OPF) String() string {
@@ -144,7 +150,7 @@ func NewOPF(zr *zip.ReadCloser, path string) (*OPF, error) {
 		return nil, err
 	}
 	defer r.Close()
-	opf := &OPF{}
+	opf := &OPF{opfPath: path} // Сохраняем путь в структуру
 	if err := decodeXML(r, &opf); err != nil {
 		return nil, err
 	}
@@ -152,8 +158,23 @@ func NewOPF(zr *zip.ReadCloser, path string) (*OPF, error) {
 }
 
 func GetCoverImage(stock string, book *model.Book) (image.Image, error) {
-	zr, _ := zip.OpenReader(path.Join(stock, book.File))
+	zr, err := zip.OpenReader(path.Join(stock, book.File))
+	if err != nil {
+		return nil, err
+	}
 	defer zr.Close()
+	
+	rc, err := zr.Open(book.Cover) 
+	if err != nil {
+		return nil, fmt.Errorf("could not open cover file %s in archive: %v", book.Cover, err)
+	}
+	defer rc.Close()
+	
+	img, _, err := image.Decode(bufio.NewReader(rc))	
+	return img, err
+	
+	
+	/*
 	var rc io.ReadCloser
 	var err error
 	for _, file := range zr.File {
@@ -172,6 +193,7 @@ func GetCoverImage(stock string, book *model.Book) (image.Image, error) {
 		return nil, err
 	}
 	return img, nil
+	*/
 }
 
 // Utils ---------------------------------
