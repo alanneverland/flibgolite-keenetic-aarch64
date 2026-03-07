@@ -88,6 +88,8 @@ type OPF struct {
 		Date string `xml:"date"`
 		// Provides a generic means of including package metadata.
 		Meta []struct {
+			// Добавляем поддержку ID для парсинга EPUB 3 коллекций
+			ID string `xml:"id,attr,omitempty"`	
 			// Takes a property data type value that defines the statement being made in the expression, and the text content of the element represents the assertion
 			Property string `xml:"property,attr"`
 			// Enhances the meaning of the expression or resource referenced

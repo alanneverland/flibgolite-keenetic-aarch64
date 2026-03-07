@@ -4,7 +4,7 @@ import (
 	"strings"
 	"unicode"
 	"path"
-	//"fmt"
+	"fmt"
 	"github.com/vinser/flibgolite/pkg/model"
 	"github.com/vinser/flibgolite/pkg/parser"
 )
@@ -162,9 +162,95 @@ func (ep *OPF) GetKeywords() string {
 }
 
 func (ep *OPF) GetSerie() *model.Serie {
-	return &model.Serie{}
+	serie := &model.Serie{}
+
+	// 1. Стандарт EPUB 3 (belongs-to-collection)
+	for _, meta := range ep.Metadata.Meta {
+		if meta.Property == "belongs-to-collection" {
+			serie.Name = strings.TrimSpace(meta.Text)
+			// Если у коллекции есть ID, значит у нее вероятнее всего есть и номер. 
+			// Берем ее и точно останавливаем поиск.
+			if meta.ID != "" {
+				break
+			}
+		}
+	}
+
+	// 2. Расширение Calibre (calibre:series)
+	if serie.Name == "" {
+		for _, meta := range ep.Metadata.Meta {
+			if meta.Name == "calibre:series" {
+				serie.Name = strings.TrimSpace(meta.Content)
+				break
+			}
+		}
+	}
+
+	// 3. Generic fallback (просто "series", часто бывает в конвертерах)
+	if serie.Name == "" {
+		for _, meta := range ep.Metadata.Meta {
+			if meta.Name == "series" {
+				serie.Name = strings.TrimSpace(meta.Content)
+				break
+			}
+		}
+	}
+
+	return serie
 }
 
 func (ep *OPF) GetSerieNumber() int {
+	var indexStr string
+	var serieID string
+
+	// Ищем ID основной серии для EPUB 3
+	for _, meta := range ep.Metadata.Meta {
+		if meta.Property == "belongs-to-collection" && meta.ID != "" {
+			serieID = "#" + meta.ID
+			break
+		}
+	}
+
+	// 1. EPUB 3: ищем номер, который ссылается на ID серии через refines
+	if serieID != "" {
+		for _, meta := range ep.Metadata.Meta {
+			if meta.Property == "group-position" && meta.Refines == serieID {
+				indexStr = meta.Text
+				break
+			}
+		}
+	}
+
+	// 2. Calibre: ищем тег calibre:series_index
+	if indexStr == "" {
+		for _, meta := range ep.Metadata.Meta {
+			if meta.Name == "calibre:series_index" {
+				indexStr = meta.Content
+				break
+			}
+		}
+	}
+
+	// 3. Generic fallback: ищем просто "series_index"
+	if indexStr == "" {
+		for _, meta := range ep.Metadata.Meta {
+			if meta.Name == "series_index" {
+				indexStr = meta.Content
+				break
+			}
+		}
+	}
+
+	// Преобразование строки в число (с поддержкой дробных серий и запятых)
+	if indexStr != "" {
+		// Защита от русской запятой в дробях (например, "1,5" -> "1.5")
+		indexStr = strings.ReplaceAll(indexStr, ",", ".")
+		
+		var index float64
+		// fmt.Sscanf безопасно распарсит и "2", и "2.5", и "2.0"
+		fmt.Sscanf(indexStr, "%f", &index)
+		return int(index)
+	}
+
 	return 0
 }
