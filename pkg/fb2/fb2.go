@@ -34,7 +34,7 @@ func (fb *FB2) GetYear() string {
 }
 
 func (fb *FB2) GetPlot() string {
-	return parser.StripHTMLTags(strings.Join(fb.Description.TitleInfo.Annotation.P, " "))
+	return parser.StripHTMLTags(strings.Join(fb.Description.TitleInfo.Annotation.P, "\n"))
 }
 
 func (fb *FB2) GetCover() string {
@@ -87,20 +87,23 @@ func (fb *FB2) GetKeywords() string {
 }
 
 func (fb *FB2) GetSerie() *model.Serie {
+	if len(fb.Description.TitleInfo.Series) > 0 {
+		return &model.Serie{Name: parser.Title(fb.Description.TitleInfo.Series[0].Name, fb.Description.TitleInfo.Lang)}
+	} else
 	if len(fb.Description.PublishInfo.Series) > 0 {
 		return &model.Serie{Name: parser.Title(fb.Description.PublishInfo.Series[0].Name, fb.Description.TitleInfo.Lang)}
-	} else if len(fb.Description.TitleInfo.Series) > 0 {
-		return &model.Serie{Name: parser.Title(fb.Description.TitleInfo.Series[0].Name, fb.Description.TitleInfo.Lang)}
-	} else {
+	} else  {
 		return &model.Serie{}
 	}
 }
+
 func (fb *FB2) GetSerieNumber() int {
+	if len(fb.Description.TitleInfo.Series) > 0 {
+		return fb.Description.TitleInfo.Series[0].Number
+	} else 
 	if len(fb.Description.PublishInfo.Series) > 0 {
 		return fb.Description.PublishInfo.Series[0].Number
-	} else if len(fb.Description.TitleInfo.Series) > 0 {
-		return fb.Description.TitleInfo.Series[0].Number
-	} else {
+	} else  {
 		return 0
 	}
 }
