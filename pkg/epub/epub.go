@@ -3,7 +3,8 @@ package epub
 import (
 	"strings"
 	"unicode"
-
+	"path"
+	//"fmt"
 	"github.com/vinser/flibgolite/pkg/model"
 	"github.com/vinser/flibgolite/pkg/parser"
 )
@@ -36,7 +37,17 @@ func (ep *OPF) GetPlot() string {
 }
 
 func (ep *OPF) GetCover() string {
-	if strings.TrimSpace(ep.Version) == "2.0" {
+	coverHref := ""
+	
+	for _, item := range ep.Manifest.Item {
+		if strings.Contains(item.Properties, "cover-image") {
+			coverHref = strings.TrimSpace(item.Href)
+			break
+		}
+	}
+	
+	
+	if coverHref == "" {
 		content := ""
 		for _, meta := range ep.Metadata.Meta {
 			if meta.Name == "cover" {
@@ -44,21 +55,46 @@ func (ep *OPF) GetCover() string {
 				break
 			}
 		}
-		if content == "" {
-			return ""
-		}
-		for _, item := range ep.Manifest.Item {
-			if item.ID == content {
-				return strings.TrimSpace(item.Href)
+		if content != "" {			
+			for _, item := range ep.Manifest.Item {
+				if item.ID == content {
+					coverHref = strings.TrimSpace(item.Href)
+					break
+				}
 			}
 		}
-		return ""
 	}
-	for _, item := range ep.Manifest.Item {
-		if item.Properties == "cover-image" {
-			return strings.TrimSpace(item.Href)
+	
+	
+		
+	if coverHref == "" {
+		for _, item := range ep.Manifest.Item {
+			id := strings.ToLower(item.ID)
+			href := strings.ToLower(item.Href)
+			isImage := strings.HasPrefix(item.MediaType, "image/")
+
+			if isImage && (strings.Contains(id, "cover") || strings.Contains(href, "cover")) {
+				coverHref = strings.TrimSpace(item.Href)
+				break
+			}
 		}
 	}
+	
+	if coverHref == "" {
+		for _, ref := range ep.Guide.Reference {
+			if ref.Type == "cover" {
+				coverHref = strings.TrimSpace(ref.Href)
+				break
+			}
+		}
+	}
+	
+	if coverHref != "" {		
+		//fmt.Printf("DEBUG: opfPath=%s, href=%s\n", ep.opfPath, coverHref)
+		return path.Join(path.Dir(ep.opfPath), coverHref)
+		//return coverHref
+	}
+	
 	return ""
 }
 
