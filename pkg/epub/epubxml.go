@@ -8,7 +8,7 @@ import (
 	"image"
 	"io"
 	"path"
-
+	"strings"
 	_ "image/gif"
 	_ "image/jpeg"
 	_ "image/png"
@@ -163,37 +163,36 @@ func GetCoverImage(stock string, book *model.Book) (image.Image, error) {
 		return nil, err
 	}
 	defer zr.Close()
-	
-	rc, err := zr.Open(book.Cover) 
-	if err != nil {
-		return nil, fmt.Errorf("could not open cover file %s in archive: %v", book.Cover, err)
-	}
-	defer rc.Close()
-	
-	img, _, err := image.Decode(bufio.NewReader(rc))	
-	return img, err
-	
-	
-	/*
-	var rc io.ReadCloser
-	var err error
-	for _, file := range zr.File {
-		if strings.Contains(file.Name, book.Cover) {
-			rc, err = file.Open()
-			if err != nil {
-				log.Fatal(err)
-			}
-			break
+
+	// 1. Попытка быстрого открытия по точному пути
+	rc, err := zr.Open(book.Cover)
+	if err == nil {
+		defer rc.Close()
+		img, _, err := image.Decode(bufio.NewReader(rc))
+		if err == nil {
+			return img, nil
 		}
 	}
-	defer rc.Close()
-	img, _, err := image.Decode(bufio.NewReader(rc))
 
-	if err != nil {
-		return nil, err
+	// 2. Fallback на поиск перебором
+	for _, file := range zr.File {
+		if strings.Contains(file.Name, book.Cover) {
+			rcOld, err := file.Open()
+			if err != nil {
+				continue 
+			}
+			
+			// Декодируем и СРАЗУ закрываем, не дожидаясь конца функции
+			img, _, err := image.Decode(bufio.NewReader(rcOld))
+			rcOld.Close() 
+			
+			if err == nil {
+				return img, nil
+			}
+		}
 	}
-	return img, nil
-	*/
+
+	return nil, fmt.Errorf("could not find or decode cover %s", book.Cover)
 }
 
 // Utils ---------------------------------
