@@ -33,7 +33,35 @@ func (ep *OPF) GetYear() string {
 }
 
 func (ep *OPF) GetPlot() string {
-	return parser.StripHTMLTags(strings.Join(ep.Metadata.Description, " "))
+	// Если в файле несколько тегов <dc:description>, склеиваем их через перенос строки, а не пробел
+	desc := strings.Join(ep.Metadata.Description, "\n")
+
+	// 1. Помогаем HTML-тегам: превращаем абзацы и брейки в переносы строк
+	desc = strings.ReplaceAll(desc, "<div>", "\n")
+	desc = strings.ReplaceAll(desc, "<p>", "\n")
+	desc = strings.ReplaceAll(desc, "<br>", "\n")
+	desc = strings.ReplaceAll(desc, "<br/>", "\n")
+
+	// 2. Вычищаем HTML. 
+	// Функция StripHTMLTags просто удалит теги <b>, <i>, <div> и т.д., 
+	// но НЕ тронет исходные переносы строк (\n) внутри обычного текста.
+	desc = parser.StripHTMLTags(desc)
+
+	// 3. Унифицируем переносы (Windows \r\n -> Unix \n) и превращаем табы в пробелы
+	desc = strings.ReplaceAll(desc, "\r", "")
+	desc = strings.ReplaceAll(desc, "\t", " ")
+
+	// 4. Аккуратно схлопываем только горизонтальные двойные пробелы
+	for strings.Contains(desc, "  ") {
+		desc = strings.ReplaceAll(desc, "  ", " ")
+	}
+
+	// 5. Защита от гигантских пустых дыр (ограничиваем максимальный отступ двумя переносами)
+	for strings.Contains(desc, "\n\n") {
+		desc = strings.ReplaceAll(desc, "\n\n", "\n")
+	}
+
+	return strings.TrimSpace(desc)
 }
 
 func (ep *OPF) GetCover() string {
@@ -123,8 +151,9 @@ func (ep *OPF) GetAuthors() []*model.Author {
 			}
 		}
 		if cr.Role == "aut" || cr.Role == "" || len(ep.Metadata.Creator) == 1 {
-			parts := strings.Split(cr.Text, ",")
-			name := parser.ParseFullName(parts[0])
+			//parts := strings.Split(cr.Text, ",")
+			//name := parser.ParseFullName(parts[0])
+			name := parser.ParseFullName(cr.Text)
 			a.Name = strings.TrimSpace(strings.TrimSuffix(name.First+" "+name.Middle+" "+name.Last+" ("+name.Nick+")", " ()"))
 			if cr.FileAs != "" {
 				a.Sort = parser.AddCommaAfterLastName(parser.DelimitGluedName(cr.FileAs))
